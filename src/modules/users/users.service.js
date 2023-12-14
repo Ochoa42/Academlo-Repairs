@@ -1,4 +1,4 @@
-import User from "./users.model.js";
+import User from './users.model.js';
 
 export class UserService {
 

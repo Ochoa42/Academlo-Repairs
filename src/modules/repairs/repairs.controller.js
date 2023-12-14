@@ -1,5 +1,5 @@
 import { RepairService } from "./repairs.service.js"
-
+import { validateRepairs, validatePartialRepairs } from "./repairs.schema.js";
 
 export const findAllRepairs = async(req, res) => {
   try {
@@ -16,11 +16,17 @@ export const findAllRepairs = async(req, res) => {
 
 export const createRepair = async(req, res) => {
   try {
-    const { date, userId } = req.body;
-    
-    const repair = await RepairService.create({ date, userId })
+    const { hasError , errorMessages , repairData} = validateRepairs(req.body); // aquie no se necesita desestructurar por que zod ya lo hace internam
+      
+      if(hasError) {
+          return res.status(422).json({
+              status: 'error',
+              message: errorMessages,
+          });
+      }
 
-    return res.status(201).json(repair)
+      const repairs = await RepairService.create(repairData)
+      return res.status(201).json(repairs)
 
   } catch (error) {
     return res.status(500).json({

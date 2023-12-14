@@ -1,4 +1,30 @@
 import { UserService } from "./users.service.js"
+import { validateUser, validatePartialUser } from "./users.schema.js"
+
+export const register = async(req,res) => {
+  try {
+      
+      const { hasError , errorMessages , userData} = validateUser(req.body); // aquie no se necesita desestructurar por que zod ya lo hace internam
+      
+      if(hasError) {
+          return res.status(422).json({
+              status: 'error',
+              message: errorMessages,
+          });
+      }
+
+      const user = await UserService.create(userData)
+      return res.status(201).json(user)
+
+  } catch (error) {
+      console.log(error)
+      return res.status(500).json({
+          status: 'fail',
+          message: 'something went very wrong',
+          error,
+      });
+  }
+}
 
 
 export const findAllUsers = async(req, res) => {
@@ -54,51 +80,38 @@ export const findOneUser = async(req, res) => {
 
 export const updateUser = async(req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email } = req.body;
-
-    const user = await UserService.findOne(id);
-
-    if(!user){
-      return res.status(404).json({
-        status: 'error',
-        message: 'user not found'
-      })
+    const {user} = req;
+    const {hasError,errorMessages,userData} = validatePartialUser(req.body);
+    if(hasError) {
+        return res.status(422).json({
+            status: "error",
+            message: errorMessages
+        })
     }
-
-    const userUpdated = await UserService.update(user, { name, email })
-
-    return res.status(200).json(userUpdated)
-    
-  } catch (error) {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Something went very wrong! 🧨'
-    })
-  }
+    const userUpdated = await UserService.update(user, userData)
+    return res.status(200).json(userUpdated);
+} catch (error) {
+    console.log(error)
+    return res.status(404).json({
+        status: 'fail',
+        message: 'something went very wrong',
+        error,
+    });
+}
 }
 
 export const deleteUser = async(req, res) => {
   try {
-    const { id } = req.params;
-
-    const user = await UserService.findOne(id);
-
-    if(!user){
-      return res.status(404).json({
-        status: 'error',
-        message: 'user not found'
-      })
-    }
-
-    await UserService.delete(user)
-
-    return res.status(204).json(null)
-    
+        const {user} = req;
+        console.log(user);
+        await  UserService.delete(user);
+        return res.status(204).json();
   } catch (error) {
     return res.status(500).json({
       status: 'fail',
-      message: 'Something went very wrong! 🧨'
+      message: 'Something went very wrong! 🧨',
+      error,
     })
   }
 }
+
