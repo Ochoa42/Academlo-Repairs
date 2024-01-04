@@ -1,7 +1,7 @@
+import { catchAsync } from "../../common/errors/catchAsync.js";
 import { UserService } from "./users.service.js";
 
-export const validateExistUser = async(req, res, next) => {
-    try {
+export const validateExistUser = catchAsync(async(req, res, next) => {
         const {id} = req.params;
         const user = await UserService.findOne(id);
         if(!user) {
@@ -13,12 +13,4 @@ export const validateExistUser = async(req, res, next) => {
         req.user = user;
         console.log(user.name)
         next();
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            status: 'fail',
-            message: 'something went very wrong',
-            error,
-        });
-    }
-}
+});

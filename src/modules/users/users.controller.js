@@ -25,7 +25,7 @@ export const findAllUsers = catchAsync(async(req, res,next) => {
 
 
 
-export const createUser = catchAsync(async(req, res) => {
+export const createUser = catchAsync(async(req, res,next) => {
     const { name, email, password, role } = req.body;
     const user = await UserService.create({ name, email, password, role })
     return res.status(201).json(user)
