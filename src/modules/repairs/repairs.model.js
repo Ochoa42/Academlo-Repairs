@@ -1,4 +1,5 @@
-import { DataTypes } from 'sequelize';
+
+import { DataTypes,Sequelize } from 'sequelize';
 import { sequelize } from '../../config/database/database.js';
 
 
@@ -11,7 +12,8 @@ const Repair = sequelize.define('repairs', {
     },
     date: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
     },
     motorsNumber: {
       type: DataTypes.INTEGER,
@@ -31,6 +33,14 @@ const Repair = sequelize.define('repairs', {
       field: 'user_id',
       allowNull: false
     }
+// }
+// , {
+//    indexes: [
+//   {
+//     unique: true,
+//     fields: ['userId', 'start_time'],
+//   },
+//   ],
 });
 
 export default Repair;  
