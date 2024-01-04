@@ -30,7 +30,7 @@ export class UserService {
     if (existingUser) {
       return null
     }
-    return await Users.create(data)
+    return await User.create(data)
   }
 
   static async update(user, data) {
