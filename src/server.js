@@ -1,11 +1,13 @@
 import app from './app.js'
+import { initModel } from './common/utils/association.js'
 import { authenticated, syncUp } from './config/database/database.js'
 import { envs } from './config/enviroments/enviroments.js'
 
 async function main(){
   try {
     await authenticated()
-    await syncUp()
+    initModel();
+    await syncUp();
   } catch (error) {
     console.error(error)
   }
