@@ -2,8 +2,8 @@ import User from './users.model.js';
 
 export class UserService {
 
-  static async findOne(id){
-    return await User.findOne({ 
+  static async findOne(id) {
+    return await User.findOne({
       where: {
         id: id,
         status: 'available'
@@ -11,7 +11,7 @@ export class UserService {
     })
   }
 
-  static async findAll(){
+  static async findAll() {
     return await User.findAll({
       where: {
         status: 'available'
@@ -19,15 +19,25 @@ export class UserService {
     })
   }
 
-  static async create(data){
-    return await User.create(data)
+  static async create(data) {
+    const existingUser = await Users.findOne({
+      where: {
+        email: data.email,
+        status: 'available'
+      }
+    });
+
+    if (existingUser) {
+      return null
+    }
+    return await Users.create(data)
   }
 
-  static async update(user, data){
+  static async update(user, data) {
     return await user.update(data)
   }
 
-  static async delete(user){
+  static async delete(user) {
     return await user.update({ status: 'disabled' })
   }
 
