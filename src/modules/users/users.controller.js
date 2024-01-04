@@ -28,22 +28,17 @@ export const findAllUsers = catchAsync(async (req, res, next) => {
   return res.status(200).json(users)
 });
 
-
-
 export const findOneUser = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const user = await UserService.findOne(id);
-  if (!user) {
-    return res.status(404).json({
-      status: 'error',
-      message: 'user not found'
-    })
-  }
-  return res.status(200).json(user)
+  const { user } = req;
+
+  return res.status(200).json({
+    id: user.id,
+    password: user.password,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  });
 });
-
-
-
 
 export const updateUser = catchAsync(async (req, res, next) => {
   const { user } = req;
